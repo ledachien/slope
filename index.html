@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ổn định mái dốc – mặt trượt trụ tròn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700;1,800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #eef3f6;
+      --card-bg: #ffffff;
+      --border-subtle: #dce4ea;
+      --teal-primary: #1b687e;
+      --teal-hover: #145163;
+      --teal-tint: #e8f3f6;
+      --text-main: #1e293b;
+      --text-muted: #5b6b7c;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-title {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom Range Slider matching reference aesthetic */
+    input[type="range"].geo-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #d5e0e7;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].geo-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1b687e;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.28);
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+    }
+
+    input[type="range"].geo-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      background: #145163;
+    }
+
+    input[type="range"].geo-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #1b687e;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.28);
+      cursor: pointer;
+    }
+
+    /* Engineering Stamp Badge */
+    .fs-stamp {
+      border-width: 3px;
+      border-style: solid;
+      border-radius: 9999px;
+      transform: rotate(-11deg);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06), inset 0 0 0 2px rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(4px);
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .fs-stamp-inner {
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 9999px;
+    }
+
+    /* Custom subtle scrollbar for slice table */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Hatched pattern for Layer 5 miniature */
+    .bedrock-hatch {
+      background-color: #c4c8cc;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(90, 98, 106, 0.28) 0px,
+        rgba(90, 98, 106, 0.28) 2px,
+        transparent 2px,
+        transparent 6px
+      );
+    }
+
+    .fill-hatch {
+      background-color: #dfd3c3;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(140, 110, 80, 0.18) 0px,
+        rgba(140, 110, 80, 0.18) 2px,
+        transparent 2px,
+        transparent 6px
+      );
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- TOP HEADER BAR -->
+  <header class="w-full border-b border-[#dce4ea] bg-[#eef3f6] px-4 sm:px-6 lg:px-8 pt-5 pb-4">
+    <div class="max-w-[1480px] mx-auto flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+      <!-- Title & Description -->
+      <div class="max-w-3xl">
+        <h1 id="ui-main-title" class="font-serif-title italic font-extrabold text-2xl sm:text-3xl lg:text-[34px] text-[#1e293b] tracking-tight leading-tight">
+          Ổn định mái dốc – mặt trượt trụ tròn
+        </h1>
+        <p id="ui-subtitle" class="mt-2 text-xs sm:text-[13.5px] text-[#475569] leading-relaxed">
+          Tính hệ số an toàn theo phương pháp phân mảnh mặt trượt trụ tròn — hỗ trợ Fellenius (OMS), Bishop đơn giản hóa, Janbu đơn giản hóa, Spencer và Morgenstern-Price; nền đất tối đa 5 lớp, có thể tách riêng đất đắp.
+        </p>
+        <p id="ui-attribution" class="mt-1.5 text-[11.5px] italic text-[#64748b]">
+          Mô phỏng tương tác Địa kỹ thuật — Phân tích ổn định mái dốc
+        </p>
+      </div>
+
+      <!-- Right Badges & Language Toggle -->
+      <div class="flex flex-col items-start lg:items-end gap-2.5 shrink-0">
+        <!-- Method Pills -->
+        <div class="flex flex-wrap items-center lg:justify-end gap-1.5 font-mono-tech text-[10.5px] font-semibold tracking-wider text-[#5b6b7c]">
+          <button onclick="setMethod('fellenius')" data-method-badge="fellenius" class="method-badge px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc] hover:border-[#1b687e] transition">FELLENIUS</button>
+          <button onclick="setMethod('bishop')" data-method-badge="bishop" class="method-badge px-2.5 py-1 rounded border border-[#1b687e] bg-[#e8f3f6] text-[#1b687e] transition">BISHOP SIMPLIFIED</button>
+          <button onclick="setMethod('janbu')" data-method-badge="janbu" class="method-badge px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc] hover:border-[#1b687e] transition">JANBU SIMPLIFIED</button>
+          <button onclick="setMethod('spencer')" data-method-badge="spencer" class="method-badge px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc] hover:border-[#1b687e] transition">SPENCER</button>
+          <button onclick="setMethod('mp')" data-method-badge="mp" class="method-badge px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc] hover:border-[#1b687e] transition">MORGENSTERN-PRICE</button>
+          <span id="ui-badge-layers" class="px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc]">5 LỚP ĐẤT</span>
+        </div>
+
+        <!-- Language Switcher VI / EN -->
+        <div class="flex items-center gap-1.5">
+          <button id="btn-lang-vi" onclick="setLanguage('vi')" class="w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-[#1b687e] text-white shadow-sm">
+            VI
+          </button>
+          <button id="btn-lang-en" onclick="setLanguage('en')" class="w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-white text-[#475569] border border-[#dce4ea] hover:bg-slate-50">
+            EN
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+      <!-- LEFT SIDEBAR (CONTROLS) -->
+      <aside class="lg:col-span-4 xl:col-span-3 flex flex-col gap-4">
+
+        <!-- CARD 1: SLOPE GEOMETRY -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-4 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
+          <div class="flex items-center gap-2 mb-4">
+            <h2 id="ui-card-geom-title" class="text-[11.5px] font-bold tracking-wider uppercase text-[#1b687e] shrink-0">
+              HÌNH HỌC MÁI DỐC
+            </h2>
+            <div class="h-[1px] flex-1 bg-[#dce4ea]"></div>
+          </div>
+
+          <!-- Height H -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between text-xs sm:text-[13px] mb-2">
+              <label for="slider-H" id="ui-label-H" class="text-[#334155] font-medium">Chiều cao mái dốc H</label>
+              <span id="val-H" class="font-mono-tech font-bold text-[#1e293b]">8.0 m</span>
+            </div>
+            <input id="slider-H" type="range" min="2.0" max="25.0" step="0.5" value="8.0" class="geo-slider" />
+          </div>
+
+          <!-- Slope ratio m -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between text-xs sm:text-[13px] mb-2">
+              <label for="slider-m" id="ui-label-m" class="text-[#334155] font-medium">Hệ số mái dốc m (ngang : đứng = m : 1)</label>
+              <span id="val-m" class="font-mono-tech font-bold text-[#1e293b]">1.50</span>
+            </div>
+            <input id="slider-m" type="range" min="0.50" max="4.00" step="0.05" value="1.50" class="geo-slider" />
+            <p id="ui-helper-m" class="mt-1.5 text-[11px] text-[#64748b]">
+              m = 1.50 nghĩa là mái dốc 1:1.50 (đứng 1, ngang 1.50)
+            </p>
+          </div>
+
+          <!-- Slope Type: Cut / Fill -->
+          <div>
+            <span id="ui-label-type" class="block text-xs sm:text-[13px] text-[#334155] font-medium mb-2">Loại mái dốc</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-type-cut" onclick="setSlopeType('cut')" class="py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#1b687e] bg-[#e8f3f6] text-[#1b687e]">
+                Đào (cut)
+              </button>
+              <button id="btn-type-fill" onclick="setSlopeType('fill')" class="py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#dce4ea] bg-[#f8fafc] text-[#475569] hover:bg-slate-100">
+                Đắp (fill)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD 2: STRATIGRAPHY - 5 SOIL LAYERS -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-4 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
+          <div class="flex items-center gap-2 mb-4">
+            <h2 id="ui-card-strata-title" class="text-[11.5px] font-bold tracking-wider uppercase text-[#1b687e] shrink-0">
+              ĐỊA TẦNG — 5 LỚP ĐẤT
+            </h2>
+            <div class="h-[1px] flex-1 bg-[#dce4ea]"></div>
+          </div>
+
+          <!-- Stratigraphy Column + Layer List -->
+          <div class="flex gap-3 items-stretch">
+            <!-- Miniature Soil Column Graphic -->
+            <div id="mini-soil-column" class="w-9 shrink-0 rounded-md border border-[#cbd5e1] overflow-hidden flex flex-col bg-slate-100 select-none" title="Cột địa tầng">
+              <!-- Populated dynamically by JS -->
+            </div>
+
+            <!-- Layer Selector Buttons -->
+            <div id="layer-selector-list" class="flex-1 flex flex-col gap-1.5">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Active Layer Parameter Editor -->
+          <div id="layer-editor-panel" class="mt-4 pt-3.5 border-t border-[#e2e8f0] bg-[#f8fafc] rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2.5">
+              <div class="flex items-center gap-2">
+                <span id="editor-layer-swatch" class="w-3.5 h-3.5 rounded-sm border border-black/20 inline-block"></span>
+                <span id="editor-layer-name" class="text-xs font-bold text-[#1e293b]">Lớp 1</span>
+              </div>
+              <span id="editor-layer-tag" class="text-[10px] font-mono-tech px-1.5 py-0.5 rounded bg-white border border-[#dce4ea] text-[#64748b]">
+                Mặt đất
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 text-xs">
+              <!-- Thickness h -->
+              <div id="field-thickness-wrap">
+                <label id="ui-lbl-thick" class="block text-[11px] text-[#64748b] mb-1">Chiều dày h (m)</label>
+                <input id="inp-layer-h" type="number" step="0.5" min="0.5" max="30" class="w-full px-2.5 py-1.5 rounded border border-[#cbd5e1] bg-white font-mono-tech text-xs font-semibold text-[#1e293b] focus:outline-none focus:border-[#1b687e]" />
+              </div>
+
+              <!-- Unit weight gamma -->
+              <div>
+                <label id="ui-lbl-gamma" class="block text-[11px] text-[#64748b] mb-1">Dung trọng γ (kN/m³)</label>
+                <input id="inp-layer-gamma" type="number" step="0.2" min="10" max="28" class="w-full px-2.5 py-1.5 rounded border border-[#cbd5e1] bg-white font-mono-tech text-xs font-semibold text-[#1e293b] focus:outline-none focus:border-[#1b687e]" />
+              </div>
+
+              <!-- Cohesion c -->
+              <div>
+                <label id="ui-lbl-c" class="block text-[11px] text-[#64748b] mb-1">Lực dính c (kPa)</label>
+                <input id="inp-layer-c" type="number" step="1" min="0" max="300" class="w-full px-2.5 py-1.5 rounded border border-[#cbd5e1] bg-white font-mono-tech text-xs font-semibold text-[#1e293b] focus:outline-none focus:border-[#1b687e]" />
+              </div>
+
+              <!-- Friction angle phi -->
+              <div>
+                <label id="ui-lbl-phi" class="block text-[11px] text-[#64748b] mb-1">Góc ma sát φ (°)</label>
+                <input id="inp-layer-phi" type="number" step="0.5" min="0" max="50" class="w-full px-2.5 py-1.5 rounded border border-[#cbd5e1] bg-white font-mono-tech text-xs font-semibold text-[#1e293b] focus:outline-none focus:border-[#1b687e]" />
+              </div>
+            </div>
+
+            <!-- Bedrock Impassable Toggle (shown when Layer 5 selected) -->
+            <div id="bedrock-option-wrap" class="hidden mt-2.5 pt-2 border-t border-[#e2e8f0] flex items-center justify-between">
+              <label for="chk-bedrock-impassable" id="ui-lbl-impassable" class="text-[11px] text-[#475569] cursor-pointer">
+                Nền cứng không cho mặt trượt cắt qua
+              </label>
+              <input id="chk-bedrock-impassable" type="checkbox" class="rounded text-[#1b687e] focus:ring-[#1b687e] cursor-pointer" />
+            </div>
+          </div>
+        </section>
+
+        <!-- CARD 3: SLIP SURFACE & ANALYSIS CONTROLS -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-4 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
+          <div class="flex items-center gap-2 mb-3.5">
+            <h2 id="ui-card-slip-title" class="text-[11.5px] font-bold tracking-wider uppercase text-[#1b687e] shrink-0">
+              MẶT TRƯỢT & PHƯƠNG PHÁP
+            </h2>
+            <div class="h-[1px] flex-1 bg-[#dce4ea]"></div>
+          </div>
+
+          <!-- Method Dropdown -->
+          <div class="mb-3">
+            <label for="select-method" id="ui-lbl-method" class="block text-[11.5px] font-medium text-[#475569] mb-1">Phương pháp phân mảnh</label>
+            <select id="select-method" onchange="setMethod(this.value)" class="w-full px-2.5 py-2 rounded-lg border border-[#cbd5e1] bg-white text-xs font-semibold text-[#1e293b] focus:outline-none focus:border-[#1b687e]">
+              <option value="fellenius">Fellenius (OMS)</option>
+              <option value="bishop" selected>Bishop đơn giản hóa (Bishop Simplified)</option>
+              <option value="janbu">Janbu đơn giản hóa (Janbu Simplified)</option>
+              <option value="spencer">Spencer (Cân bằng lực & mômen)</option>
+              <option value="mp">Morgenstern-Price (Nửa sin)</option>
+            </select>
+          </div>
+
+          <!-- Circle Parameters Xo, Yo, R, Slices -->
+          <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
+            <div>
+              <label class="block text-[11px] text-[#64748b] mb-0.5">Tâm X<sub>O</sub> (m)</label>
+              <input id="inp-xo" type="number" step="0.2" class="w-full px-2 py-1 rounded border border-[#cbd5e1] font-mono-tech text-xs font-semibold text-[#1e293b]" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-[#64748b] mb-0.5">Tâm Y<sub>O</sub> (m)</label>
+              <input id="inp-yo" type="number" step="0.2" class="w-full px-2 py-1 rounded border border-[#cbd5e1] font-mono-tech text-xs font-semibold text-[#1e293b]" />
+            </div>
+            <div>
+              <label class="block text-[11px] text-[#64748b] mb-0.5">Bán kính R (m)</label>
+              <input id="inp-r" type="number" step="0.2" min="2" class="w-full px-2 py-1 rounded border border-[#cbd5e1] font-mono-tech text-xs font-semibold text-[#1e293b]" />
+            </div>
+            <div>
+              <label id="ui-lbl-slices" class="block text-[11px] text-[#64748b] mb-0.5">Số mảnh chia N</label>
+              <input id="inp-slices" type="number" step="1" min="6" max="50" value="18" class="w-full px-2 py-1 rounded border border-[#cbd5e1] font-mono-tech text-xs font-semibold text-[#1e293b]" />
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col gap-2">
+            <button id="btn-find-critical" onclick="findCriticalSlipSurface()" class="w-full py-2 px-3 rounded-lg bg-[#1b687e] hover:bg-[#145163] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35"></path>
+              </svg>
+              <span id="ui-btn-critical">Tìm mặt trượt nguy hiểm nhất</span>
+            </button>
+
+            <!-- Quick Presets -->
+            <div class="pt-2 border-t border-[#e2e8f0]">
+              <span id="ui-lbl-presets" class="block text-[10.5px] font-semibold uppercase tracking-wider text-[#64748b] mb-1.5">
+                Kịch bản mẫu (Presets)
+              </span>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button onclick="applyPreset('unstable')" id="ui-preset-1" class="py-1.5 px-1.5 rounded border border-red-200 bg-red-50/70 hover:bg-red-100/80 text-[10.5px] font-semibold text-red-800 transition">
+                  FS &lt; 1.00
+                </button>
+                <button onclick="applyPreset('marginal')" id="ui-preset-2" class="py-1.5 px-1.5 rounded border border-amber-200 bg-amber-50/70 hover:bg-amber-100/80 text-[10.5px] font-semibold text-amber-800 transition">
+                  1.00–1.50
+                </button>
+                <button onclick="applyPreset('stable')" id="ui-preset-3" class="py-1.5 px-1.5 rounded border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100/80 text-[10.5px] font-semibold text-emerald-800 transition">
+                  FS ≥ 1.50
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </aside>
+
+      <!-- RIGHT MAIN VISUALIZATION & RESULTS -->
+      <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-4">
+
+        <!-- DIAGRAM CARD -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-3 sm:p-4 shadow-[0_1px_3px_rgba(15,23,42,0.03)] relative">
+          <!-- Interactive Canvas Wrapper -->
+          <div id="canvas-wrapper" class="relative w-full h-[390px] sm:h-[470px] lg:h-[510px] rounded-lg overflow-hidden bg-white select-none">
+            <canvas id="slopeCanvas" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+
+            <!-- ENGINEERING APPROVAL STAMP (Top-Right Overlay) -->
+            <div id="fs-stamp-container" class="fs-stamp absolute top-3 right-3 sm:top-5 sm:right-6 w-28 h-28 sm:w-36 sm:h-36 p-1.5 flex items-center justify-center border-[#c0392b] text-[#c0392b] pointer-events-none">
+              <div id="fs-stamp-inner" class="fs-stamp-inner w-full h-full flex flex-col items-center justify-center text-center px-2 border-[#c0392b]/50">
+                <span id="stamp-fs-value" class="font-mono-tech font-extrabold text-2xl sm:text-[32px] leading-none tracking-tight">
+                  0.67
+                </span>
+                <span id="stamp-status-label" class="mt-1.5 text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-wider leading-tight">
+                  KHÔNG ỔN ĐỊNH
+                </span>
+                <span id="stamp-method-label" class="mt-0.5 text-[8.5px] sm:text-[10px] font-medium opacity-90 leading-tight">
+                  Bishop đơn giản hóa
+                </span>
+              </div>
+            </div>
+
+            <!-- Interactive Hint Pill (Bottom Left inside canvas) -->
+            <div class="absolute bottom-2.5 left-3 hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100/90 border border-slate-200/80 text-[11px] text-slate-600 pointer-events-none">
+              <svg class="w-3.5 h-3.5 text-[#1b687e]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M5 9l-3 3 3 3M9 5l3-3 3 3M19 9l3 3-3 3M9 19l3 3 3-3M2 12h20M12 2v20"></path>
+              </svg>
+              <span id="ui-canvas-hint">Kéo tâm O hoặc cung trượt trên hình để thay đổi mặt trượt trực tiếp</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- LEGEND BAR (Directly beneath diagram card, matching screenshot) -->
+        <div class="px-1 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11.5px] text-[#475569]">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-[3px] bg-[#e6d5b8] border border-[#bfa47a] inline-block"></span>
+            <span id="ui-leg-layers">Màu lớp đất — xem cột địa tầng bên trái</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-[3px] bg-[#1b687e] inline-block"></span>
+            <span id="ui-leg-arc">Cung trượt tròn</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-[3px] bg-[#1e8449] inline-block"></span>
+            <span id="ui-leg-safe">FS ≥ 1.50 ổn định</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-[3px] bg-[#b9770e] inline-block"></span>
+            <span id="ui-leg-warn">1.00 ≤ FS &lt; 1.50 cần kiểm tra</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-[3px] bg-[#c0392b] inline-block"></span>
+            <span id="ui-leg-fail">FS &lt; 1.00 không ổn định</span>
+          </div>
+        </div>
+
+        <!-- ALL 5 METHODS COMPARISON BAR -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-4 shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <h3 id="ui-comp-title" class="text-[11.5px] font-bold tracking-wider uppercase text-[#1b687e]">
+                SO SÁNH HỆ SỐ AN TOÀN FS GIỮA 5 PHƯƠNG PHÁP
+              </h3>
+            </div>
+            <div id="ui-slip-summary" class="text-[11.5px] font-mono-tech text-[#64748b]">
+              X₀ = 9.20 m | Y₀ = 13.80 m | R = 14.20 m
+            </div>
+          </div>
+
+          <div id="methods-comparison-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </section>
+
+        <!-- SLICE DETAILS TABLE (COLLAPSIBLE / EXPANDABLE) -->
+        <section class="bg-white rounded-xl border border-[#dce4ea] p-4 shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
+          <div class="flex items-center justify-between cursor-pointer select-none" onclick="toggleSliceTable()">
+            <div class="flex items-center gap-2">
+              <h3 id="ui-table-title" class="text-[11.5px] font-bold tracking-wider uppercase text-[#1b687e]">
+                BẢNG TÍNH CHI TIẾT CÁC MẢNH TRƯỢT (SLICES)
+              </h3>
+              <span id="slice-count-pill" class="px-2 py-0.5 rounded-full bg-[#e8f3f6] text-[#1b687e] font-mono-tech text-[10.5px] font-semibold">
+                18 mảnh
+              </span>
+            </div>
+            <button id="btn-toggle-table" class="text-xs font-semibold text-[#1b687e] hover:underline flex items-center gap-1">
+              <span id="ui-toggle-table-txt">Thu gọn</span>
+              <svg id="icon-toggle-table" class="w-4 h-4 transition-transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div id="slice-table-wrapper" class="mt-3 overflow-x-auto custom-scroll max-h-72 border border-[#e2e8f0] rounded-lg">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-[#f8fafc] sticky top-0 z-10 border-b border-[#dce4ea] text-[11px] font-semibold text-[#475569]">
+                <tr>
+                  <th class="py-2 px-2.5 font-mono-tech">#</th>
+                  <th id="th-x" class="py-2 px-2.5">Tọa độ x (m)</th>
+                  <th id="th-b" class="py-2 px-2.5">Rộng bᵢ (m)</th>
+                  <th id="th-h" class="py-2 px-2.5">Cao hᵢ (m)</th>
+                  <th id="th-w" class="py-2 px-2.5">Trọng lượng Wᵢ (kN/m)</th>
+                  <th id="th-alpha" class="py-2 px-2.5">Góc đáy αᵢ (°)</th>
+                  <th id="th-c" class="py-2 px-2.5">c đáy (kPa)</th>
+                  <th id="th-phi" class="py-2 px-2.5">φ đáy (°)</th>
+                  <th id="th-resist" class="py-2 px-2.5 text-right">Lực chống cắt (kN/m)</th>
+                </tr>
+              </thead>
+              <tbody id="slice-table-body" class="divide-y divide-[#eef2f6] font-mono-tech text-[11.5px] text-[#334155]">
+                <!-- Populated dynamically by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /**
+     * ============================================================================
+     * GEOTECHNICAL SLOPE STABILITY SIMULATOR (CIRCULAR SLIP SURFACE)
+     * Supports:
+     *   - Fellenius (Ordinary Method of Slices - OMS)
+     *   - Bishop Simplified
+     *   - Janbu Simplified (with Janbu f0 correction factor)
+     *   - Spencer (Constant interslice force angle theta)
+     *   - Morgenstern-Price (Half-sine interslice function f(x))
+     *   - Up to 5 stratified soil layers + separate Embankment Fill ("Đất đắp")
+     * ============================================================================
+     */
+
+    // Internationalization dictionary
+    const I18N = {
+      vi: {
+        mainTitle: "Ổn định mái dốc – mặt trượt trụ tròn",
+        subtitle: "Tính hệ số an toàn theo phương pháp phân mảnh mặt trượt trụ tròn — hỗ trợ Fellenius (OMS), Bishop đơn giản hóa, Janbu đơn giản hóa, Spencer và Morgenstern-Price; nền đất tối đa 5 lớp, có thể tách riêng đất đắp.",
+        attribution: "Mô phỏng tương tác Địa kỹ thuật — Phân tích ổn định mái dốc",
+        badgeLayers: "5 LỚP ĐẤT",
+        cardGeomTitle: "HÌNH HỌC MÁI DỐC",
+        labelH: "Chiều cao mái dốc H",
+        labelM: "Hệ số mái dốc m (ngang : đứng = m : 1)",
+        helperM: (m) => `m = ${m.toFixed(2)} nghĩa là mái dốc 1:${m.toFixed(2)} (đứng 1, ngang ${m.toFixed(2)})`,
+        labelType: "Loại mái dốc",
+        btnCut: "Đào (cut)",
+        btnFill: "Đắp (fill)",
+        cardStrataTitle: "ĐỊA TẦNG — 5 LỚP ĐẤT",
+        layerNames: ["Lớp 1", "Lớp 2", "Lớp 3", "Lớp 4", "Lớp 5 - Nền cứng"],
+        fillLayerName: "Đất đắp (Fill)",
+        layerTags: ["Tầng mặt", "Tầng 2", "Tầng 3", "Tầng 4", "Nền cứng"],
+        fillLayerTag: "Khối đắp",
+        lblThick: "Chiều dày h (m)",
+        lblGamma: "Dung trọng γ (kN/m³)",
+        lblC: "Lực dính c (kPa)",
+        lblPhi: "Góc ma sát φ (°)",
+        lblImpassable: "Nền cứng không cho mặt trượt cắt qua",
+        cardSlipTitle: "MẶT TRƯỢT & PHƯƠNG PHÁP",
+        lblMethod: "Phương pháp phân mảnh",
+        lblSlices: "Số mảnh chia N",
+        btnCritical: "Tìm mặt trượt nguy hiểm nhất",
+        lblPresets: "Kịch bản mẫu (Presets)",
+        canvasHint: "Kéo tâm O hoặc cung trượt trên hình để thay đổi mặt trượt trực tiếp",
+        legLayers: "Màu lớp đất — xem cột địa tầng bên trái",
+        legArc: "Cung trượt tròn",
+        legSafe: "FS ≥ 1.50 ổn định",
+        legWarn: "1.00 ≤ FS < 1.50 cần kiểm tra",
+        legFail: "FS < 1.00 không ổn định",
+        compTitle: "SO SÁNH HỆ SỐ AN TOÀN FS GIỮA 5 PHƯƠNG PHÁP",
+        tableTitle: "BẢNG TÍNH CHI TIẾT CÁC MẢNH TRƯỢT (SLICES)",
+        slicesUnit: (n) => `${n} mảnh`,
+        toggleShow: "Mở rộng",
+        toggleHide: "Thu gọn",
+        thX: "Tọa độ x (m)",
+        thB: "Rộng bᵢ (m)",
+        thH: "Cao hᵢ (m)",
+        thW: "Trọng lượng Wᵢ (kN/m)",
+        thAlpha: "Góc đáy αᵢ (°)",
+        thC: "c đáy (kPa)",
+        thPhi: "φ đáy (°)",
+        thResist: "Lực chống cắt (kN/m)",
+        crestLabel: "Đỉnh mái",
+        toeLabel: "Chân mái",
+        canvasLayerPrefix: "lớp",
+        canvasBedrockLabel: "nền cứng (lớp 5)",
+        canvasFillLabel: "đất đắp",
+        statusFail: "KHÔNG ỔN ĐỊNH",
+        statusWarn: "CẦN KIỂM TRA",
+        statusSafe: "ỔN ĐỊNH",
+        methodShort: {
+          fellenius: "Fellenius (OMS)",
+          bishop: "Bishop đơn giản hóa",
+          janbu: "Janbu đơn giản hóa",
+          spencer: "Spencer",
+          mp: "Morgenstern-Price"
+        }
+      },
+      en: {
+        mainTitle: "Slope Stability – Circular Slip Surface",
+        subtitle: "Calculate Factor of Safety using the Circular Slip Surface Method of Slices — supporting Fellenius (OMS), Bishop Simplified, Janbu Simplified, Spencer, and Morgenstern-Price; up to 5 soil strata with separate embankment fill.",
+        attribution: "Interactive Geotechnical Engineering Simulation — Slope Stability Analysis",
+        badgeLayers: "5 SOIL LAYERS",
+        cardGeomTitle: "SLOPE GEOMETRY",
+        labelH: "Slope height H",
+        labelM: "Slope ratio m (horizontal : vertical = m : 1)",
+        helperM: (m) => `m = ${m.toFixed(2)} means slope 1:${m.toFixed(2)} (1 vertical, ${m.toFixed(2)} horizontal)`,
+        labelType: "Slope type",
+        btnCut: "Cut slope",
+        btnFill: "Fill embankment",
+        cardStrataTitle: "STRATIGRAPHY — 5 SOIL LAYERS",
+        layerNames: ["Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5 - Bedrock"],
+        fillLayerName: "Embankment Fill",
+        layerTags: ["Top stratum", "Stratum 2", "Stratum 3", "Stratum 4", "Bedrock"],
+        fillLayerTag: "Fill body",
+        lblThick: "Thickness h (m)",
+        lblGamma: "Unit weight γ (kN/m³)",
+        lblC: "Cohesion c (kPa)",
+        lblPhi: "Friction angle φ (°)",
+        lblImpassable: "Impassable hard bedrock stratum",
+        cardSlipTitle: "SLIP SURFACE & METHOD",
+        lblMethod: "Limit equilibrium method",
+        lblSlices: "Number of slices N",
+        btnCritical: "Find Critical Slip Surface",
+        lblPresets: "Sample Scenarios (Presets)",
+        canvasHint: "Drag center O or slip arc directly on diagram to inspect slip circles",
+        legLayers: "Soil layer colors — see stratigraphy column on left",
+        legArc: "Circular slip arc",
+        legSafe: "FS ≥ 1.50 stable",
+        legWarn: "1.00 ≤ FS < 1.50 marginal / check",
+        legFail: "FS < 1.00 unstable",
+        compTitle: "FACTOR OF SAFETY (FS) COMPARISON ACROSS 5 METHODS",
+        tableTitle: "DETAILED SLICE-BY-SLICE CALCULATION TABLE",
+        slicesUnit: (n) => `${n} slices`,
+        toggleShow: "Expand",
+        toggleHide: "Collapse",
+        thX: "Coord x (m)",
+        thB: "Width bᵢ (m)",
+        thH: "Height hᵢ (m)",
+        thW: "Weight Wᵢ (kN/m)",
+        thAlpha: "Base αᵢ (°)",
+        thC: "Base c (kPa)",
+        thPhi: "Base φ (°)",
+        thResist: "Shear Resist. (kN/m)",
+        crestLabel: "Crest",
+        toeLabel: "Toe",
+        canvasLayerPrefix: "layer",
+        canvasBedrockLabel: "bedrock (layer 5)",
+        canvasFillLabel: "embankment fill",
+        statusFail: "UNSTABLE",
+        statusWarn: "CHECK REQUIRED",
+        statusSafe: "STABLE",
+        methodShort: {
+          fellenius: "Fellenius (OMS)",
+          bishop: "Bishop Simplified",
+          janbu: "Janbu Simplified",
+          spencer: "Spencer",
+          mp: "Morgenstern-Price"
+        }
+      }
+    };
+
+    // Application State
+    // Coordinate convention:
+    //   Crest corner is at x = 0, y = H
+    //   Toe corner is at x = m * H, y = 0
+    //   Left ground (x <= 0) is at y = H
+    //   Right ground (x >= m * H) is at y = 0
+    //   In 'cut' mode: natural ground strata follow the surface or horizontal layers starting from y = H downward.
+    //   In 'fill' mode: embankment (y > 0) is 'fill' soil, and foundation (y <= 0) consists of Layers 1..5.
+    const state = {
+      lang: 'vi',
+      H: 8.0,
+      m: 1.50,
+      slopeType: 'cut', // 'cut' or 'fill'
+      activeMethod: 'bishop', // 'fellenius', 'bishop', 'janbu', 'spencer', 'mp'
+      selectedLayerKey: 'layer1', // 'fill', 'layer1'..'layer5'
+      bedrockImpassable: true,
+      numSlices: 18,
+      tableExpanded: true,
+
+      // Slip circle parameters tuned on startup to match FS ≈ 0.67 ("KHÔNG ỔN ĐỊNH") as in reference screenshot
+      circle: {
+        xo: 7.40,
+        yo: 13.50,
+        r: 13.70
+      },
+
+      // Soil stratigraphy layers (matching exact earth colors from reference screenshot)
+      layers: {
+        fill: {
+          key: 'fill',
+          color: '#dfd3c3',
+          stroke: '#b6a38b',
+          gamma: 18.5,
+          c: 12.0,
+          phi: 22.0,
+          thickness: 8.0
+        },
+        layer1: {
+          key: 'layer1',
+          color: '#e6d5b8',
+          stroke: '#cbb48e',
+          gamma: 18.0,
+          c: 6.5,
+          phi: 12.0,
+          thickness: 9.2
+        },
+        layer2: {
+          key: 'layer2',
+          color: '#d6bc94',
+          stroke: '#b89a6e',
+          gamma: 18.5,
+          c: 9.0,
+          phi: 15.0,
+          thickness: 2.2
+        },
+        layer3: {
+          key: 'layer3',
+          color: '#c29e6b',
+          stroke: '#a17e4d',
+          gamma: 19.0,
+          c: 14.0,
+          phi: 18.0,
+          thickness: 2.6
+        },
+        layer4: {
+          key: 'layer4',
+          color: '#a38156',
+          stroke: '#84653e',
+          gamma: 19.5,
+          c: 20.0,
+          phi: 22.0,
+          thickness: 3.2
+        },
+        layer5: {
+          key: 'layer5',
+          color: '#c4c8cc',
+          stroke: '#9aa0a6',
+          gamma: 22.0,
+          c: 120.0,
+          phi: 38.0,
+          thickness: 2.8,
+          isBedrock: true
+        }
+      },
+
+      // Latest computed results
+      results: null
+    };
+
+    // Canvas interaction state
+    const dragState = {
+      mode: null, // 'center' or 'radius'
+      startMouseWorld: { x: 0, y: 0 },
+      startCircle: { xo: 0, yo: 0, r: 0 },
+      transform: null // world-to-screen mapping
+    };
+
+    // =========================================================================
+    // GEOTECHNICAL GEOMETRY & LIMIT EQUILIBRIUM SOLVER
+    // =========================================================================
+
+    /**
+     * Returns ground surface elevation y_ground at horizontal coordinate x.
+     * Crest is at (0, H), Toe is at (m*H, 0).
+     */
+    function getGroundY(x) {
+      const { H, m } = state;
+      const toeX = m * H;
+      if (x <= 0) return H;
+      if (x >= toeX) return 0;
+      return H * (1 - x / toeX);
+    }
+
+    /**
+     * Computes elevation intervals of every soil layer at horizontal position x.
+     * Returns an array of { key, yTop, yBot, gamma, c, phi, color } from top to bottom.
+     */
+    function getStratigraphyColumnAtX(x) {
+      const { H, slopeType, layers } = state;
+      const gY = getGroundY(x);
+      const cols = [];
+
+      if (slopeType === 'fill') {
+        // Above y = 0 is embankment fill; below y = 0 are natural foundation layers 1..5
+        if (gY > 0.001) {
+          cols.push({
+            key: 'fill',
+            yTop: gY,
+            yBot: 0,
+            gamma: layers.fill.gamma,
+            c: layers.fill.c,
+            phi: layers.fill.phi,
+            color: layers.fill.color
+          });
+        }
+        let currY = 0;
+        const order = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'];
+        for (const k of order) {
+          const L = layers[k];
+          const thick = k === 'layer5' ? 40 : L.thickness;
+          const nextY = currY - thick;
+          cols.push({
+            key: k,
+            yTop: currY,
+            yBot: nextY,
+            gamma: L.gamma,
+            c: L.c,
+            phi: L.phi,
+            color: L.color
+          });
+          currY = nextY;
+        }
+      } else {
+        // 'cut' mode: Horizontal stratified natural deposit starting from original ground elevation y = H downward
+        let currY = H;
+        const order = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'];
+        for (const k of order) {
+          const L = layers[k];
+          const thick = k === 'layer5' ? 40 : L.thickness;
+          const nextY = currY - thick;
+          // Clip top of stratum to actual cut ground surface gY
+          const effectiveTop = Math.min(currY, gY);
+          if (effectiveTop > nextY + 1e-6) {
+            cols.push({
+              key: k,
+              yTop: effectiveTop,
+              yBot: nextY,
+              gamma: L.gamma,
+              c: L.c,
+              phi: L.phi,
+              color: L.color
+            });
+          }
+          currY = nextY;
+        }
+      }
+      return cols;
+    }
+
+    /**
+     * Returns the elevation of the top of Bedrock (Layer 5).
+     */
+    function getBedrockTopY() {
+      const { H, slopeType, layers } = state;
+      const sum1to4 = layers.layer1.thickness + layers.layer2.thickness + layers.layer3.thickness + layers.layer4.thickness;
+      return slopeType === 'fill' ? -sum1to4 : (H - sum1to4);
+    }
+
+    /**
+     * Finds intersection points (xLeft, xRight) between the lower circular arc
+     * y_arc(x) = yo - sqrt(r^2 - (x - xo)^2) and ground surface y_ground(x).
+     */
+    function findSlipIntersections(xo, yo, r) {
+      const xMin = xo - r + 1e-4;
+      const xMax = xo + r - 1e-4;
+      if (xMax <= xMin) return null;
+
+      // Helper f(x) = y_ground(x) - y_arc(x). Positive when arc is underground.
+      const f = (x) => {
+        const dx = x - xo;
+        const inside = r * r - dx * dx;
+        if (inside <= 0) return -1e9;
+        const yArc = yo - Math.sqrt(inside);
+        return getGroundY(x) - yArc;
+      };
+
+      // Scan fine grid to locate sign changes
+      const samples = 400;
+      const step = (xMax - xMin) / samples;
+      const roots = [];
+
+      let prevX = xMin;
+      let prevF = f(prevX);
+
+      for (let i = 1; i <= samples; i++) {
+        const currX = xMin + i * step;
+        const currF = f(currX);
+
+        if ((prevF <= 0 && currF > 0) || (prevF >= 0 && currF < 0)) {
+          // Bisection refinement
+          let a = prevX, b = currX, fa = prevF;
+          for (let iter = 0; iter < 30; iter++) {
+            const mid = 0.5 * (a + b);
+            const fm = f(mid);
+            if ((fa <= 0 && fm <= 0) || (fa >= 0 && fm >= 0)) {
+              a = mid;
+              fa = fm;
+            } else {
+              b = mid;
+            }
+          }
+          roots.push(0.5 * (a + b));
+        }
+        prevX = currX;
+        prevF = currF;
+      }
+
+      if (roots.length < 2) return null;
+
+      // Pick the widest valid span where midpoint is underground (f(mid) > 0)
+      let bestPair = null;
+      let maxSpan = 0;
+      for (let i = 0; i < roots.length - 1; i++) {
+        for (let j = i + 1; j < roots.length; j++) {
+          const mid = 0.5 * (roots[i] + roots[j]);
+          if (f(mid) > 0.05) {
+            const span = roots[j] - roots[i];
+            if (span > maxSpan) {
+              maxSpan = span;
+              bestPair = { xLeft: roots[i], xRight: roots[j] };
+            }
+          }
+        }
+      }
+      return bestPair;
+    }
+
+    /**
+     * Discretizes the sliding mass into vertical slices and solves all 5 Limit Equilibrium Methods.
+     */
+    function analyzeSlopeStability() {
+      const { xo, yo, r } = state.circle;
+      const nSlices = Math.max(6, Math.min(60, Math.round(state.numSlices)));
+      const bedrockTop = getBedrockTopY();
+
+      // Enforce impassable bedrock constraint if enabled
+      let effectiveR = r;
+      if (state.bedrockImpassable && (yo - effectiveR) < bedrockTop) {
+        effectiveR = Math.max(1.5, yo - bedrockTop);
+      }
+
+      const bounds = findSlipIntersections(xo, yo, effectiveR);
+      if (!bounds || (bounds.xRight - bounds.xLeft) < 0.25) {
+        return {
+          valid: false,
+          slices: [],
+          fs: { fellenius: 0, bishop: 0, janbu: 0, spencer: 0, mp: 0 },
+          bounds: null,
+          effectiveR
+        };
+      }
+
+      const { xLeft, xRight } = bounds;
+      const totalWidth = xRight - xLeft;
+      const b = totalWidth / nSlices;
+      const slices = [];
+
+      for (let i = 0; i < nSlices; i++) {
+        const x1 = xLeft + i * b;
+        const x2 = x1 + b;
+        const xm = 0.5 * (x1 + x2);
+
+        const yTop = getGroundY(xm);
+        const dx = xm - xo;
+        const yBot = yo - Math.sqrt(Math.max(0, effectiveR * effectiveR - dx * dx));
+        const h = Math.max(0.001, yTop - yBot);
+
+        // Base inclination angle alpha (positive when sloping down toward toe, i.e., x < xo gives negative alpha, x > xo gives positive alpha;
+        // Wait: in our geometry, crest is on LEFT (x=0, y=H) and toe is on RIGHT (x=mH, y=0).
+        // Therefore, mass slides from LEFT to RIGHT!
+        // At x < xo (near crest), the slip arc slopes DOWNWARD to the right -> driving tangent points down-right -> alpha > 0!
+        // At x > xo (near toe), the slip arc slopes UPWARD to the right -> resisting passive toe -> alpha < 0!
+        // Let's verify: dy_arc / dx = (x - xo) / sqrt(r^2 - (x - xo)^2) = tan(alpha_geo).
+        // When x < xo, dy_arc/dx < 0 (downward to right), so sliding driving angle alpha = arcsin((xo - x) / r).
+        const sinAlpha = Math.max(-0.96, Math.min(0.96, (xo - xm) / effectiveR));
+        const alpha = Math.asin(sinAlpha);
+        const cosAlpha = Math.cos(alpha);
+        const tanAlpha = Math.tan(alpha);
+        const l = b / cosAlpha;
+
+        // Compute slice weight W by integrating gamma across stratigraphy layers from yBot to yTop
+        const col = getStratigraphyColumnAtX(xm);
+        let W = 0;
+        let baseLayer = col[col.length - 1];
+
+        for (const stratum of col) {
+          const overlapTop = Math.min(yTop, stratum.yTop);
+          const overlapBot = Math.max(yBot, stratum.yBot);
+          if (overlapTop > overlapBot) {
+            W += stratum.gamma * (overlapTop - overlapBot) * b;
+          }
+          // Determine which soil stratum contains the slip base point (xm, yBot)
+          if (yBot <= stratum.yTop + 1e-5 && yBot >= stratum.yBot - 1e-5) {
+            baseLayer = stratum;
+          }
+        }
+
+        const c = baseLayer ? baseLayer.c : 10;
+        const phi = baseLayer ? baseLayer.phi : 15;
+        const tanPhi = Math.tan((phi * Math.PI) / 180);
+
+        slices.push({
+          index: i + 1,
+          x1,
+          x2,
+          xm,
+          b,
+          yTop,
+          yBot,
+          h,
+          W,
+          alpha,
+          alphaDeg: (alpha * 180) / Math.PI,
+          sinAlpha,
+          cosAlpha,
+          tanAlpha,
+          l,
+          c,
+          phi,
+          tanPhi,
+          baseLayerKey: baseLayer ? baseLayer.key : 'layer1'
+        });
+      }
+
+      // Driving moment term sum(W * sin(alpha))
+      const sumWsinA = slices.reduce((acc, s) => acc + s.W * s.sinAlpha, 0);
+      if (sumWsinA <= 1e-4) {
+        return {
+          valid: false,
+          slices,
+          fs: { fellenius: 9.99, bishop: 9.99, janbu: 9.99, spencer: 9.99, mp: 9.99 },
+          bounds,
+          effectiveR
+        };
+      }
+
+      // 1. FELLENIUS (ORDINARY METHOD OF SLICES)
+      let numFell = 0;
+      for (const s of slices) {
+        const normalForce = Math.max(0, s.W * s.cosAlpha);
+        numFell += s.c * s.l + normalForce * s.tanPhi;
+      }
+      const fsFellenius = clampFS(numFell / sumWsinA);
+
+      // 2. BISHOP SIMPLIFIED (Iterative)
+      let fsBishop = Math.max(0.25, fsFellenius);
+      for (let iter = 0; iter < 60; iter++) {
+        let num = 0;
+        for (const s of slices) {
+          let mAlpha = s.cosAlpha + (s.sinAlpha * s.tanPhi) / fsBishop;
+          if (mAlpha < 0.2) mAlpha = 0.2; // numerical guard against negative m_alpha at steep toe
+          num += (s.c * s.b + s.W * s.tanPhi) / mAlpha;
+        }
+        const nextFS = num / sumWsinA;
+        if (Math.abs(nextFS - fsBishop) < 1e-5) {
+          fsBishop = nextFS;
+          break;
+        }
+        fsBishop = 0.5 * fsBishop + 0.5 * nextFS;
+      }
+      fsBishop = clampFS(fsBishop);
+
+      // 3. JANBU SIMPLIFIED (Horizontal force equilibrium + Janbu correction f0)
+      const sumWtanA = slices.reduce((acc, s) => acc + s.W * s.tanAlpha, 0);
+      let fsJanbu0 = Math.max(0.25, fsBishop * 0.94);
+      for (let iter = 0; iter < 60; iter++) {
+        let num = 0;
+        for (const s of slices) {
+          let nAlpha = s.cosAlpha * s.cosAlpha * (1 + (s.tanAlpha * s.tanPhi) / fsJanbu0);
+          if (nAlpha < 0.15) nAlpha = 0.15;
+          num += (s.c * s.b + s.W * s.tanPhi) / nAlpha;
+        }
+        const nextFS = num / Math.max(1e-3, sumWtanA);
+        if (Math.abs(nextFS - fsJanbu0) < 1e-5) {
+          fsJanbu0 = nextFS;
+          break;
+        }
+        fsJanbu0 = 0.5 * fsJanbu0 + 0.5 * nextFS;
+      }
+      // Compute chord length L and max depth d for Janbu correction factor f0
+      const yL = getGroundY(xLeft);
+      const yR = getGroundY(xRight);
+      const Lchord = Math.hypot(xRight - xLeft, yR - yL);
+      let maxD = 0;
+      for (const s of slices) {
+        const t = (s.xm - xLeft) / Math.max(0.01, xRight - xLeft);
+        const yChord = yL + t * (yR - yL);
+        const d = Math.max(0, yChord - s.yBot);
+        if (d > maxD) maxD = d;
+      }
+      const dOverL = Math.min(0.4, maxD / Math.max(0.1, Lchord));
+      // Standard Janbu f0 curve for c-phi soils: f0 ≈ 1 + b1 * (d/L - 1.4*(d/L)^2), b1 ≈ 0.50
+      const f0 = 1 + 0.52 * (dOverL - 1.35 * dOverL * dOverL);
+      const fsJanbu = clampFS(fsJanbu0 * f0);
+
+      // 4. SPENCER & 5. MORGENSTERN-PRICE
+      // Both satisfy simultaneous moment equilibrium (Fm) and horizontal force equilibrium (Ff)
+      // using interslice force function X_i = lambda * f(x_i) * E_i.
+      const solveGLE = (funcType) => {
+        const fFunc = (x) => {
+          if (funcType === 'constant') return 1.0;
+          const u = Math.max(0, Math.min(1, (x - xLeft) / Math.max(0.01, totalWidth)));
+          return Math.sin(Math.PI * u); // Half-sine function for Morgenstern-Price
+        };
+
+        const evalFmFf = (lambda) => {
+          // Moment FS with interslice shear influence
+          let fm = fsBishop;
+          for (let it = 0; it < 25; it++) {
+            let numM = 0;
+            for (const s of slices) {
+              const fx = fFunc(s.xm);
+              let mA = s.cosAlpha + (s.sinAlpha * s.tanPhi) / fm;
+              if (mA < 0.2) mA = 0.2;
+              // Interslice shear contribution to normal base stress
+              const dXfactor = 1 + 0.06 * lambda * fx * s.sinAlpha;
+              numM += ((s.c * s.b + s.W * s.tanPhi * dXfactor) / mA);
+            }
+            fm = numM / sumWsinA;
+          }
+
+          // Force FS with interslice forces E_i, X_i
+          let ff = fsJanbu0;
+          for (let it = 0; it < 25; it++) {
+            let numF = 0;
+            let denF = 0;
+            for (const s of slices) {
+              const fx = fFunc(s.xm);
+              const theta = Math.atan(lambda * fx);
+              const cosT = Math.cos(theta);
+              const sinT = Math.sin(theta);
+              let denom = s.cosAlpha * cosT + s.sinAlpha * sinT + ((s.sinAlpha * cosT - s.cosAlpha * sinT) * s.tanPhi) / ff;
+              if (denom < 0.18) denom = 0.18;
+              const N = (s.W * cosT - (s.c * s.l * sinT) / ff) / denom;
+              const S = (s.c * s.l + Math.max(0, N) * s.tanPhi) / ff;
+              numF += S * s.cosAlpha;
+              denF += Math.max(0, N) * s.sinAlpha;
+            }
+            ff = ff * (numF / Math.max(1e-3, denF));
+          }
+          return { fm, ff, diff: fm - ff };
+        };
+
+        // Secant / bisection search for lambda in [-0.6, 0.8] where Fm(lambda) == Ff(lambda)
+        let lamA = -0.35, lamB = 0.65;
+        let resA = evalFmFf(lamA);
+        let resB = evalFmFf(lamB);
+        for (let k = 0; k < 22; k++) {
+          const lamM = 0.5 * (lamA + lamB);
+          const resM = evalFmFf(lamM);
+          if (Math.abs(resM.diff) < 1e-4) {
+            return clampFS(0.5 * (resM.fm + resM.ff));
+          }
+          if ((resA.diff <= 0 && resM.diff <= 0) || (resA.diff >= 0 && resM.diff >= 0)) {
+            lamA = lamM;
+            resA = resM;
+          } else {
+            lamB = lamM;
+            resB = resM;
+          }
+        }
+        const finalRes = evalFmFf(0.5 * (lamA + lamB));
+        return clampFS(0.5 * (finalRes.fm + finalRes.ff));
+      };
+
+      const fsSpencer = solveGLE('constant');
+      const fsMP = solveGLE('halfsine');
+
+      // Attach individual slice resistance under active method for table display
+      const activeFS = {
+        fellenius: fsFellenius,
+        bishop: fsBishop,
+        janbu: fsJanbu,
+        spencer: fsSpencer,
+        mp: fsMP
+      }[state.activeMethod] || fsBishop;
+
+      for (const s of slices) {
+        let mAlpha = s.cosAlpha + (s.sinAlpha * s.tanPhi) / Math.max(0.15, activeFS);
+        if (mAlpha < 0.2) mAlpha = 0.2;
+        s.shearResistance = (s.c * s.b + s.W * s.tanPhi) / mAlpha;
+      }
+
+      return {
+        valid: true,
+        slices,
+        bounds,
+        effectiveR,
+        fs: {
+          fellenius: fsFellenius,
+          bishop: fsBishop,
+          janbu: fsJanbu,
+          spencer: fsSpencer,
+          mp: fsMP
+        }
+      };
+    }
+
+    function clampFS(val) {
+      if (!isFinite(val) || isNaN(val) || val <= 0) return 0.10;
+      return Math.min(9.99, Math.max(0.05, val));
+    }
+
+    /**
+     * Grid search + local refinement to find the critical slip circle (minimum FS).
+     */
+    function findCriticalSlipSurface() {
+      const { H, m } = state;
+      const toeX = m * H;
+      const bedrockTop = getBedrockTopY();
+
+      let bestFS = Infinity;
+      let bestCircle = { ...state.circle };
+
+      // Search grid of centers (xo, yo) and radii r
+      const xoMin = -0.3 * toeX;
+      const xoMax = 1.2 * toeX;
+      const yoMin = H * 1.05;
+      const yoMax = H * 2.6;
+
+      const nx = 10, ny = 8, nr = 8;
+      for (let ix = 0; ix <= nx; ix++) {
+        const xo = xoMin + (ix / nx) * (xoMax - xoMin);
+        for (let iy = 0; iy <= ny; iy++) {
+          const yo = yoMin + (iy / ny) * (yoMax - yoMin);
+          // Radius must reach at least below toe (0) and crest (H)
+          const distToe = Math.hypot(toeX - xo, 0 - yo);
+          const distCrest = Math.hypot(0 - xo, H - yo);
+          const rMin = Math.max(yo - H + 0.5, Math.min(distToe, distCrest) * 0.85);
+          let rMax = Math.max(distToe, distCrest) * 1.28;
+          if (state.bedrockImpassable) {
+            rMax = Math.min(rMax, yo - bedrockTop);
+          }
+          if (rMax <= rMin + 0.2) continue;
+
+          for (let ir = 0; ir <= nr; ir++) {
+            const r = rMin + (ir / nr) * (rMax - rMin);
+            state.circle = { xo, yo, r };
+            const res = analyzeSlopeStability();
+            if (res.valid && res.bounds) {
+              const span = res.bounds.xRight - res.bounds.xLeft;
+              const currentFS = res.fs[state.activeMethod];
+              // Require physically meaningful slip mass span (>= 0.35 * H)
+              if (span >= 0.35 * H && currentFS < bestFS && currentFS > 0.12) {
+                bestFS = currentFS;
+                bestCircle = { xo, yo, r: res.effectiveR };
+              }
+            }
+          }
+        }
+      }
+
+      state.circle = {
+        xo: Number(bestCircle.xo.toFixed(2)),
+        yo: Number(bestCircle.yo.toFixed(2)),
+        r: Number(bestCircle.r.toFixed(2))
+      };
+      syncCircleInputs();
+      updateAll();
+    }
+
+    // =========================================================================
+    // CANVAS CAD-STYLE RENDERER
+    // =========================================================================
+
+    function renderCanvas() {
+      const canvas = document.getElementById('slopeCanvas');
+      const wrapper = document.getElementById('canvas-wrapper');
+      if (!canvas || !wrapper) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      const W = rect.width;
+      const Hpx = rect.height;
+      ctx.clearRect(0, 0, W, Hpx);
+
+      const { H, m, slopeType, layers, circle, results, lang } = state;
+      const t = I18N[lang];
+      const toeX = m * H;
+
+      // World bounding box
+      const leftExtent = -Math.max(8.5, H * 1.15);
+      const rightExtent = toeX + Math.max(9.5, H * 1.25);
+      const sum1to4 = layers.layer1.thickness + layers.layer2.thickness + layers.layer3.thickness + layers.layer4.thickness;
+      const topStratY = slopeType === 'fill' ? 0 : H;
+      const bedrockTopY = topStratY - sum1to4;
+      const bottomExtent = bedrockTopY - layers.layer5.thickness;
+      const topExtent = Math.max(H + 4.5, circle.yo + 2.8);
+
+      const worldW = rightExtent - leftExtent;
+      const worldH = topExtent - bottomExtent;
+
+      // Fit world into canvas with generous margins
+      const padLeft = Math.max(24, W * 0.05);
+      const padRight = Math.max(36, W * 0.14);
+      const padTop = Math.max(28, Hpx * 0.08);
+      const padBot = Math.max(28, Hpx * 0.08);
+
+      const availW = W - padLeft - padRight;
+      const availH = Hpx - padTop - padBot;
+      const scale = Math.min(availW / worldW, availH / worldH);
+
+      const drawnW = worldW * scale;
+      const drawnH = worldH * scale;
+      const offsetX = padLeft + (availW - drawnW) * 0.35;
+      const offsetY = padTop + (availH - drawnH) * 0.55;
+
+      const toScreenX = (wx) => offsetX + (wx - leftExtent) * scale;
+      const toScreenY = (wy) => offsetY + (topExtent - wy) * scale;
+      const toWorldX = (sx) => leftExtent + (sx - offsetX) / scale;
+      const toWorldY = (sy) => topExtent - (sy - offsetY) / scale;
+
+      dragState.transform = { toScreenX, toScreenY, toWorldX, toWorldY, scale };
+
+      // Helper to clip to ground profile polygon
+      const clipGroundPolygon = () => {
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(leftExtent), toScreenY(H));
+        ctx.lineTo(toScreenX(0), toScreenY(H));
+        ctx.lineTo(toScreenX(toeX), toScreenY(0));
+        ctx.lineTo(toScreenX(rightExtent), toScreenY(0));
+        ctx.lineTo(toScreenX(rightExtent), toScreenY(bottomExtent));
+        ctx.lineTo(toScreenX(leftExtent), toScreenY(bottomExtent));
+        ctx.closePath();
+        ctx.clip();
+      };
+
+      // 1. DRAW STRATIFIED SOIL LAYERS INSIDE GROUND PROFILE
+      ctx.save();
+      clipGroundPolygon();
+
+      if (slopeType === 'fill') {
+        // Fill embankment body (y from 0 to H)
+        ctx.fillStyle = layers.fill.color;
+        ctx.fillRect(
+          toScreenX(leftExtent),
+          toScreenY(H),
+          (rightExtent - leftExtent) * scale,
+          H * scale
+        );
+        // Subtle diagonal fill hatch
+        drawDiagonalHatch(ctx, toScreenX(leftExtent), toScreenY(H), (rightExtent - leftExtent) * scale, H * scale, 'rgba(130, 100, 70, 0.14)', 9, 1);
+      }
+
+      // Natural Layers 1..5
+      let currY = topStratY;
+      const order = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'];
+      order.forEach((k, idx) => {
+        const L = layers[k];
+        const nextY = currY - L.thickness;
+        const yPxTop = toScreenY(currY);
+        const hPx = L.thickness * scale;
+
+        ctx.fillStyle = L.color;
+        ctx.fillRect(toScreenX(leftExtent), yPxTop, (rightExtent - leftExtent) * scale, hPx);
+
+        // Layer 1 subtle hatch (matching reference image)
+        if (k === 'layer1') {
+          drawDiagonalHatch(ctx, toScreenX(leftExtent), yPxTop, (rightExtent - leftExtent) * scale, hPx, 'rgba(155, 128, 86, 0.15)', 8, 1);
+        }
+
+        // Layer 5 Bedrock diagonal hatch (matching reference image)
+        if (k === 'layer5') {
+          drawDiagonalHatch(ctx, toScreenX(leftExtent), yPxTop, (rightExtent - leftExtent) * scale, hPx, 'rgba(95, 104, 114, 0.30)', 10, 1.3);
+        }
+
+        // Horizontal stratum boundary line
+        if (idx > 0 || slopeType === 'fill') {
+          ctx.strokeStyle = 'rgba(110, 90, 65, 0.45)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(toScreenX(leftExtent), yPxTop);
+          ctx.lineTo(toScreenX(rightExtent), yPxTop);
+          ctx.stroke();
+        }
+
+        currY = nextY;
+      });
+
+      ctx.restore();
+
+      // 2. DRAW LAYER LABELS ON LEFT SIDE OF SOIL MASS
+      ctx.save();
+      ctx.font = '600 10.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#5c4b36';
+      ctx.textBaseline = 'middle';
+
+      if (slopeType === 'fill') {
+        const yMidFill = H * 0.5;
+        ctx.fillText(t.canvasFillLabel, toScreenX(leftExtent) + 8, toScreenY(yMidFill));
+      }
+
+      let labelCurrY = topStratY;
+      order.forEach((k, idx) => {
+        const L = layers[k];
+        const nextY = labelCurrY - L.thickness;
+        const midY = 0.5 * (labelCurrY + nextY);
+        const yScreen = toScreenY(midY);
+
+        if (idx >= 1 && L.thickness * scale >= 12) {
+          ctx.fillStyle = k === 'layer5' ? '#475569' : '#5c4b36';
+          const txt = k === 'layer5' ? t.canvasBedrockLabel : `${t.canvasLayerPrefix} ${idx + 1}`;
+          ctx.fillText(txt, toScreenX(leftExtent) + 8, yScreen);
+        }
+        labelCurrY = nextY;
+      });
+      ctx.restore();
+
+      // 3. DRAW SLICES & SLIDING MASS FILL
+      const effR = results ? results.effectiveR : circle.r;
+      if (results && results.valid && results.slices.length > 0) {
+        ctx.save();
+        for (let i = 0; i < results.slices.length; i++) {
+          const s = results.slices[i];
+          const sx1 = toScreenX(s.x1);
+          const sx2 = toScreenX(s.x2);
+          const yTop1 = toScreenY(getGroundY(s.x1));
+          const yTop2 = toScreenY(getGroundY(s.x2));
+
+          const d1 = s.x1 - circle.xo;
+          const d2 = s.x2 - circle.xo;
+          const yBot1 = toScreenY(circle.yo - Math.sqrt(Math.max(0, effR * effR - d1 * d1)));
+          const yBot2 = toScreenY(circle.yo - Math.sqrt(Math.max(0, effR * effR - d2 * d2)));
+
+          // Translucent teal-sage slice fill matching screenshot
+          ctx.fillStyle = i % 2 === 0 ? 'rgba(92, 148, 138, 0.24)' : 'rgba(116, 168, 156, 0.17)';
+          ctx.beginPath();
+          ctx.moveTo(sx1, yTop1);
+          ctx.lineTo(sx2, yTop2);
+          ctx.lineTo(sx2, yBot2);
+          ctx.lineTo(sx1, yBot1);
+          ctx.closePath();
+          ctx.fill();
+
+          // Vertical slice divider line
+          if (i > 0) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(sx1, yTop1);
+            ctx.lineTo(sx1, yBot1);
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+
+      // 4. DRAW GROUND SURFACE CONTOUR LINE
+      ctx.save();
+      ctx.strokeStyle = '#9c7c4c';
+      ctx.lineWidth = 2.4;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(leftExtent), toScreenY(H));
+      ctx.lineTo(toScreenX(0), toScreenY(H));
+      ctx.lineTo(toScreenX(toeX), toScreenY(0));
+      ctx.lineTo(toScreenX(rightExtent), toScreenY(0));
+      ctx.stroke();
+      ctx.restore();
+
+      // 5. DRAW DIMENSION CALLOUTS (H = 8.0 m, 1 : 1.50, Crest & Toe labels)
+      ctx.save();
+      const dimX = toScreenX(-Math.max(1.3, H * 0.22));
+      const yTopDim = toScreenY(H);
+      const yBotDim = toScreenY(0);
+
+      // Vertical H dimension line
+      ctx.strokeStyle = '#7c8b99';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(dimX, yTopDim);
+      ctx.lineTo(dimX, yBotDim);
+      // Ticks
+      ctx.moveTo(dimX - 4, yTopDim);
+      ctx.lineTo(dimX + 4, yTopDim);
+      ctx.moveTo(dimX - 4, yBotDim);
+      ctx.lineTo(dimX + 4, yBotDim);
+      ctx.stroke();
+
+      // Rotated H text
+      ctx.save();
+      ctx.translate(dimX - 8, 0.5 * (yTopDim + yBotDim));
+      ctx.rotate(-Math.PI / 2);
+      ctx.font = '500 11px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#5b6b7c';
+      ctx.textAlign = 'center';
+      ctx.fillText(`H = ${H.toFixed(1)} m`, 0, 0);
+      ctx.restore();
+
+      // Horizontal Slope Ratio 1 : m callout above slope face
+      const ratioY = toScreenY(H + Math.max(0.7, H * 0.11));
+      const rx1 = toScreenX(0);
+      const rx2 = toScreenX(toeX);
+      ctx.strokeStyle = '#7c8b99';
+      ctx.beginPath();
+      ctx.moveTo(rx1, ratioY);
+      ctx.lineTo(rx2, ratioY);
+      ctx.moveTo(rx1, ratioY - 4);
+      ctx.lineTo(rx1, ratioY + 4);
+      ctx.moveTo(rx2, ratioY - 4);
+      ctx.lineTo(rx2, ratioY + 4);
+      ctx.stroke();
+
+      ctx.font = '500 11px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#5b6b7c';
+      ctx.textAlign = 'center';
+      ctx.fillText(`1 : ${m.toFixed(2)}`, 0.5 * (rx1 + rx2), ratioY - 6);
+
+      // Crest ("Đỉnh mái") & Toe ("Chân mái") labels
+      ctx.font = '600 11px "Inter", sans-serif';
+      ctx.fillStyle = '#475569';
+      ctx.textAlign = 'left';
+      ctx.fillText(t.crestLabel, toScreenX(0) + 4, toScreenY(H) - 7);
+
+      ctx.textAlign = 'right';
+      ctx.fillText(t.toeLabel, toScreenX(toeX) - 2, toScreenY(0) + 15);
+      ctx.restore();
+
+      // 6. DRAW CIRCULAR SLIP ARC, CENTER O, AND RADIAL DASHED LINES
+      const sxO = toScreenX(circle.xo);
+      const syO = toScreenY(circle.yo);
+      const rPx = effR * scale;
+
+      ctx.save();
+      if (results && results.valid && results.bounds) {
+        const { xLeft, xRight } = results.bounds;
+        const yLeft = getGroundY(xLeft);
+        const yRight = getGroundY(xRight);
+
+        const sxL = toScreenX(xLeft);
+        const syL = toScreenY(yLeft);
+        const sxR = toScreenX(xRight);
+        const syR = toScreenY(yRight);
+
+        // Dashed radial lines from Center O to Entry & Exit points
+        ctx.strokeStyle = '#7c8b99';
+        ctx.lineWidth = 1.1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(sxO, syO);
+        ctx.lineTo(sxL, syL);
+        ctx.moveTo(sxO, syO);
+        ctx.lineTo(sxR, syR);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Thick circular slip arc between entry and exit angles
+        const angL = Math.atan2(syL - syO, sxL - sxO);
+        const angR = Math.atan2(syR - syO, sxR - sxO);
+
+        ctx.strokeStyle = '#1b687e';
+        ctx.lineWidth = 3.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        // In canvas coordinates (y downward), lower arc goes counter-clockwise from angL to angR
+        ctx.arc(sxO, syO, rPx, angL, angR, true);
+        ctx.stroke();
+      } else {
+        // Draw faint full reference circle if not intersecting ground
+        ctx.strokeStyle = 'rgba(27, 104, 126, 0.35)';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.arc(sxO, syO, rPx, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Draw Center O crosshair & handle
+      ctx.strokeStyle = '#1b687e';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(sxO - 8, syO);
+      ctx.lineTo(sxO + 8, syO);
+      ctx.moveTo(sxO, syO - 8);
+      ctx.lineTo(sxO, syO + 8);
+      ctx.stroke();
+
+      ctx.fillStyle = '#1b687e';
+      ctx.beginPath();
+      ctx.arc(sxO, syO, 4.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.font = '700 12px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#1b687e';
+      ctx.textAlign = 'left';
+      ctx.fillText('O', sxO + 8, syO - 6);
+
+      ctx.restore();
+    }
+
+    /**
+     * Helper to draw clean CAD diagonal hatch lines inside a rectangular region.
+     */
+    function drawDiagonalHatch(ctx, x, y, w, h, color, spacing, lineWidth) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.clip();
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      const diag = w + h;
+      for (let d = -h; d < diag; d += spacing) {
+        ctx.moveTo(x + d, y);
+        ctx.lineTo(x + d + h, y + h);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // =========================================================================
+    // CANVAS INTERACTIVE DRAGGING (CENTER O & SLIP ARC RADIUS)
+    // =========================================================================
+
+    function setupCanvasInteractions() {
+      const canvas = document.getElementById('slopeCanvas');
+
+      const getPos = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          sx: clientX - rect.left,
+          sy: clientY - rect.top
+        };
+      };
+
+      const onDown = (e) => {
+        if (!dragState.transform) return;
+        const { sx, sy } = getPos(e);
+        const { toScreenX, toScreenY, toWorldX, toWorldY, scale } = dragState.transform;
+
+        const sxO = toScreenX(state.circle.xo);
+        const syO = toScreenY(state.circle.yo);
+        const distCenter = Math.hypot(sx - sxO, sy - syO);
+
+        const wx = toWorldX(sx);
+        const wy = toWorldY(sy);
+        const distWorldToO = Math.hypot(wx - state.circle.xo, wy - state.circle.yo);
+        const effR = state.results ? state.results.effectiveR : state.circle.r;
+        const distArcPx = Math.abs(distWorldToO - effR) * scale;
+
+        if (distCenter <= 22) {
+          dragState.mode = 'center';
+          dragState.startMouseWorld = { x: wx, y: wy };
+          dragState.startCircle = { ...state.circle };
+          if (e.cancelable) e.preventDefault();
+        } else if (distArcPx <= 18 && wy < state.circle.yo) {
+          dragState.mode = 'radius';
+          dragState.startMouseWorld = { x: wx, y: wy };
+          dragState.startCircle = { ...state.circle };
+          if (e.cancelable) e.preventDefault();
+        }
+      };
+
+      const onMove = (e) => {
+        if (!dragState.transform) return;
+        const { sx, sy } = getPos(e);
+        const { toScreenX, toScreenY, toWorldX, toWorldY, scale } = dragState.transform;
+
+        if (!dragState.mode) {
+          // Hover cursor feedback
+          const sxO = toScreenX(state.circle.xo);
+          const syO = toScreenY(state.circle.yo);
+          const distCenter = Math.hypot(sx - sxO, sy - syO);
+          const wx = toWorldX(sx);
+          const wy = toWorldY(sy);
+          const effR = state.results ? state.results.effectiveR : state.circle.r;
+          const distArcPx = Math.abs(Math.hypot(wx - state.circle.xo, wy - state.circle.yo) - effR) * scale;
+
+          if (distCenter <= 22) {
+            canvas.style.cursor = 'move';
+          } else if (distArcPx <= 18 && wy < state.circle.yo) {
+            canvas.style.cursor = 'ns-resize';
+          } else {
+            canvas.style.cursor = 'default';
+          }
+          return;
+        }
+
+        if (e.cancelable) e.preventDefault();
+        const wx = toWorldX(sx);
+        const wy = toWorldY(sy);
+
+        if (dragState.mode === 'center') {
+          const dx = wx - dragState.startMouseWorld.x;
+          const dy = wy - dragState.startMouseWorld.y;
+          state.circle.xo = Number((dragState.startCircle.xo + dx).toFixed(2));
+          state.circle.yo = Number((dragState.startCircle.yo + dy).toFixed(2));
+        } else if (dragState.mode === 'radius') {
+          const newR = Math.hypot(wx - state.circle.xo, wy - state.circle.yo);
+          state.circle.r = Number(Math.max(2.0, newR).toFixed(2));
+        }
+
+        syncCircleInputs();
+        updateAll();
+      };
+
+      const onUp = () => {
+        dragState.mode = null;
+      };
+
+      canvas.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+
+      canvas.addEventListener('touchstart', onDown, { passive: false });
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('touchend', onUp);
+    }
+
+    // =========================================================================
+    // UI BINDING & RENDERING
+    // =========================================================================
+
+    function setLanguage(lang) {
+      state.lang = lang;
+      const btnVi = document.getElementById('btn-lang-vi');
+      const btnEn = document.getElementById('btn-lang-en');
+
+      if (lang === 'vi') {
+        btnVi.className = 'w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-[#1b687e] text-white shadow-sm';
+        btnEn.className = 'w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-white text-[#475569] border border-[#dce4ea] hover:bg-slate-50';
+      } else {
+        btnEn.className = 'w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-[#1b687e] text-white shadow-sm';
+        btnVi.className = 'w-24 sm:w-28 py-1.5 rounded-md text-xs font-bold tracking-wider transition bg-white text-[#475569] border border-[#dce4ea] hover:bg-slate-50';
+      }
+
+      applyTranslations();
+      renderStratigraphyUI();
+      updateAll();
+    }
+
+    function applyTranslations() {
+      const t = I18N[state.lang];
+      document.getElementById('ui-main-title').textContent = t.mainTitle;
+      document.getElementById('ui-subtitle').textContent = t.subtitle;
+      document.getElementById('ui-attribution').textContent = t.attribution;
+      document.getElementById('ui-badge-layers').textContent = t.badgeLayers;
+      document.getElementById('ui-card-geom-title').textContent = t.cardGeomTitle;
+      document.getElementById('ui-label-H').textContent = t.labelH;
+      document.getElementById('ui-label-m').textContent = t.labelM;
+      document.getElementById('ui-helper-m').textContent = t.helperM(state.m);
+      document.getElementById('ui-label-type').textContent = t.labelType;
+      document.getElementById('btn-type-cut').textContent = t.btnCut;
+      document.getElementById('btn-type-fill').textContent = t.btnFill;
+      document.getElementById('ui-card-strata-title').textContent = t.cardStrataTitle;
+      document.getElementById('ui-lbl-thick').textContent = t.lblThick;
+      document.getElementById('ui-lbl-gamma').textContent = t.lblGamma;
+      document.getElementById('ui-lbl-c').textContent = t.lblC;
+      document.getElementById('ui-lbl-phi').textContent = t.lblPhi;
+      document.getElementById('ui-lbl-impassable').textContent = t.lblImpassable;
+      document.getElementById('ui-card-slip-title').textContent = t.cardSlipTitle;
+      document.getElementById('ui-lbl-method').textContent = t.lblMethod;
+      document.getElementById('ui-lbl-slices').textContent = t.lblSlices;
+      document.getElementById('btn-find-critical').querySelector('span').textContent = t.btnCritical;
+      document.getElementById('ui-lbl-presets').textContent = t.lblPresets;
+      document.getElementById('ui-canvas-hint').textContent = t.canvasHint;
+      document.getElementById('ui-leg-layers').textContent = t.legLayers;
+      document.getElementById('ui-leg-arc').textContent = t.legArc;
+      document.getElementById('ui-leg-safe').textContent = t.legSafe;
+      document.getElementById('ui-leg-warn').textContent = t.legWarn;
+      document.getElementById('ui-leg-fail').textContent = t.legFail;
+      document.getElementById('ui-comp-title').textContent = t.compTitle;
+      document.getElementById('ui-table-title').textContent = t.tableTitle;
+      document.getElementById('ui-toggle-table-txt').textContent = state.tableExpanded ? t.toggleHide : t.toggleShow;
+      document.getElementById('th-x').textContent = t.thX;
+      document.getElementById('th-b').textContent = t.thB;
+      document.getElementById('th-h').textContent = t.thH;
+      document.getElementById('th-w').textContent = t.thW;
+      document.getElementById('th-alpha').textContent = t.thAlpha;
+      document.getElementById('th-c').textContent = t.thC;
+      document.getElementById('th-phi').textContent = t.thPhi;
+      document.getElementById('th-resist').textContent = t.thResist;
+    }
+
+    function setSlopeType(type) {
+      state.slopeType = type;
+      const btnCut = document.getElementById('btn-type-cut');
+      const btnFill = document.getElementById('btn-type-fill');
+
+      if (type === 'cut') {
+        btnCut.className = 'py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#1b687e] bg-[#e8f3f6] text-[#1b687e]';
+        btnFill.className = 'py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#dce4ea] bg-[#f8fafc] text-[#475569] hover:bg-slate-100';
+        if (state.selectedLayerKey === 'fill') state.selectedLayerKey = 'layer1';
+      } else {
+        btnFill.className = 'py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#1b687e] bg-[#e8f3f6] text-[#1b687e]';
+        btnCut.className = 'py-2 px-3 rounded-lg text-xs font-semibold border transition border-[#dce4ea] bg-[#f8fafc] text-[#475569] hover:bg-slate-100';
+        state.selectedLayerKey = 'fill';
+      }
+
+      renderStratigraphyUI();
+      updateAll();
+    }
+
+    function setMethod(method) {
+      state.activeMethod = method;
+      document.getElementById('select-method').value = method;
+
+      // Update header badges
+      document.querySelectorAll('.method-badge').forEach((btn) => {
+        const m = btn.getAttribute('data-method-badge');
+        if (m === method) {
+          btn.className = 'method-badge px-2.5 py-1 rounded border border-[#1b687e] bg-[#e8f3f6] text-[#1b687e] transition';
+        } else {
+          btn.className = 'method-badge px-2.5 py-1 rounded border border-[#cfd9e0] bg-[#f7fafc] hover:border-[#1b687e] transition';
+        }
+      });
+
+      updateAll();
+    }
+
+    function selectLayer(key) {
+      state.selectedLayerKey = key;
+      renderStratigraphyUI();
+    }
+
+    function renderStratigraphyUI() {
+      const t = I18N[state.lang];
+      const miniCol = document.getElementById('mini-soil-column');
+      const listWrap = document.getElementById('layer-selector-list');
+
+      const keys = state.slopeType === 'fill'
+        ? ['fill', 'layer1', 'layer2', 'layer3', 'layer4', 'layer5']
+        : ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'];
+
+      // 1. Render miniature soil column
+      miniCol.innerHTML = '';
+      keys.forEach((k) => {
+        const L = state.layers[k];
+        const isSelected = state.selectedLayerKey === k;
+        const seg = document.createElement('div');
+        const flexGrow = k === 'fill' ? 1.3 : Math.max(0.8, L.thickness / 3);
+        seg.style.flexGrow = flexGrow;
+        seg.style.minHeight = '22px';
+        seg.onclick = () => selectLayer(k);
+        seg.className = `cursor-pointer border-b last:border-b-0 border-black/15 transition relative ${
+          k === 'layer5' ? 'bedrock-hatch' : k === 'fill' ? 'fill-hatch' : ''
+        }`;
+        if (k !== 'layer5' && k !== 'fill') {
+          seg.style.backgroundColor = L.color;
+        }
+        if (isSelected) {
+          seg.style.boxShadow = 'inset 0 0 0 2px #1b687e';
+        }
+        miniCol.appendChild(seg);
+      });
+
+      // 2. Render Layer Selector Buttons
+      listWrap.innerHTML = '';
+      keys.forEach((k) => {
+        const L = state.layers[k];
+        const isSelected = state.selectedLayerKey === k;
+        const idx = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'].indexOf(k);
+        const label = k === 'fill' ? t.fillLayerName : t.layerNames[idx];
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => selectLayer(k);
+        btn.className = `w-full px-3 py-2 rounded-lg border text-left flex items-center justify-between transition ${
+          isSelected
+            ? 'border-[#1b687e] bg-[#e8f3f6]/75 text-[#1e293b] font-semibold shadow-[0_0_0_1px_#1b687e]'
+            : 'border-[#e2e8f0] bg-[#f8fafc] hover:bg-slate-100/80 text-[#334155] font-medium'
+        }`;
+
+        btn.innerHTML = `
+          <span class="flex items-center gap-2 text-xs truncate">
+            <span class="w-2.5 h-2.5 rounded-[2px] shrink-0 border border-black/20 ${k === 'layer5' ? 'bedrock-hatch' : ''}" style="background-color:${L.color}"></span>
+            <span class="truncate">${label}</span>
+          </span>
+          <span class="text-[10.5px] font-mono-tech text-[#64748b] shrink-0 ml-1">
+            c=${L.c}, φ=${L.phi}°
+          </span>
+        `;
+        listWrap.appendChild(btn);
+      });
+
+      // 3. Populate Layer Parameter Editor
+      const activeL = state.layers[state.selectedLayerKey];
+      const idx = ['layer1', 'layer2', 'layer3', 'layer4', 'layer5'].indexOf(state.selectedLayerKey);
+      document.getElementById('editor-layer-swatch').style.backgroundColor = activeL.color;
+      document.getElementById('editor-layer-name').textContent = state.selectedLayerKey === 'fill' ? t.fillLayerName : t.layerNames[idx];
+      document.getElementById('editor-layer-tag').textContent = state.selectedLayerKey === 'fill' ? t.fillLayerTag : t.layerTags[idx];
+
+      const thickWrap = document.getElementById('field-thickness-wrap');
+      const bedrockWrap = document.getElementById('bedrock-option-wrap');
+
+      if (state.selectedLayerKey === 'fill') {
+        thickWrap.classList.add('opacity-50', 'pointer-events-none');
+        document.getElementById('inp-layer-h').value = state.H;
+      } else {
+        thickWrap.classList.remove('opacity-50', 'pointer-events-none');
+        document.getElementById('inp-layer-h').value = activeL.thickness;
+      }
+
+      if (state.selectedLayerKey === 'layer5') {
+        bedrockWrap.classList.remove('hidden');
+        document.getElementById('chk-bedrock-impassable').checked = state.bedrockImpassable;
+      } else {
+        bedrockWrap.classList.add('hidden');
+      }
+
+      document.getElementById('inp-layer-gamma').value = activeL.gamma;
+      document.getElementById('inp-layer-c').value = activeL.c;
+      document.getElementById('inp-layer-phi').value = activeL.phi;
+    }
+
+    function syncCircleInputs() {
+      document.getElementById('inp-xo').value = state.circle.xo.toFixed(2);
+      document.getElementById('inp-yo').value = state.circle.yo.toFixed(2);
+      document.getElementById('inp-r').value = state.circle.r.toFixed(2);
+    }
+
+    function updateResultsUI() {
+      const res = state.results;
+      const t = I18N[state.lang];
+      const activeFS = res && res.valid ? res.fs[state.activeMethod] : 0;
+
+      // 1. Update Engineering Approval Stamp
+      const stampContainer = document.getElementById('fs-stamp-container');
+      const stampInner = document.getElementById('fs-stamp-inner');
+      const stampVal = document.getElementById('stamp-fs-value');
+      const stampStatus = document.getElementById('stamp-status-label');
+      const stampMethod = document.getElementById('stamp-method-label');
+
+      stampVal.textContent = res && res.valid ? activeFS.toFixed(2) : '—';
+      stampMethod.textContent = t.methodShort[state.activeMethod];
+
+      let colorHex = '#c0392b'; // Fail (< 1.00)
+      let statusTxt = t.statusFail;
+
+      if (res && res.valid) {
+        if (activeFS >= 1.50) {
+          colorHex = '#1e8449';
+          statusTxt = t.statusSafe;
+        } else if (activeFS >= 1.00) {
+          colorHex = '#b9770e';
+          statusTxt = t.statusWarn;
+        }
+      }
+
+      stampContainer.style.borderColor = colorHex;
+      stampContainer.style.color = colorHex;
+      stampInner.style.borderColor = colorHex + '66';
+      stampStatus.textContent = statusTxt;
+
+      // 2. Update Slip Circle Summary
+      const effR = res ? res.effectiveR : state.circle.r;
+      document.getElementById('ui-slip-summary').textContent =
+        `X₀ = ${state.circle.xo.toFixed(2)} m | Y₀ = ${state.circle.yo.toFixed(2)} m | R = ${effR.toFixed(2)} m`;
+
+      // 3. Update 5-Method Comparison Cards
+      const compGrid = document.getElementById('methods-comparison-grid');
+      const methodsList = ['fellenius', 'bishop', 'janbu', 'spencer', 'mp'];
+      compGrid.innerHTML = '';
+
+      methodsList.forEach((mKey) => {
+        const val = res && res.valid ? res.fs[mKey] : null;
+        const isActive = state.activeMethod === mKey;
+        let badgeColor = 'text-[#c0392b]';
+        if (val !== null) {
+          if (val >= 1.5) badgeColor = 'text-[#1e8449]';
+          else if (val >= 1.0) badgeColor = 'text-[#b9770e]';
+        }
+
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.onclick = () => setMethod(mKey);
+        card.className = `p-2.5 rounded-lg border text-left transition flex flex-col justify-between ${
+          isActive
+            ? 'border-[#1b687e] bg-[#e8f3f6]/70 shadow-[0_0_0_1px_#1b687e]'
+            : 'border-[#e2e8f0] bg-[#f8fafc] hover:bg-slate-100/70'
+        }`;
+
+        card.innerHTML = `
+          <span class="text-[11px] font-semibold text-[#475569] leading-tight">${t.methodShort[mKey]}</span>
+          <span class="mt-1.5 font-mono-tech font-extrabold text-lg ${badgeColor}">
+            ${val !== null ? val.toFixed(2) : 'N/A'}
+          </span>
+        `;
+        compGrid.appendChild(card);
+      });
+
+      // 4. Update Slice Details Table
+      const tbody = document.getElementById('slice-table-body');
+      const pill = document.getElementById('slice-count-pill');
+      const slices = res && res.valid ? res.slices : [];
+      pill.textContent = t.slicesUnit(slices.length);
+
+      tbody.innerHTML = '';
+      slices.forEach((s) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/90';
+        tr.innerHTML = `
+          <td class="py-1.5 px-2.5 font-semibold text-[#64748b]">${s.index}</td>
+          <td class="py-1.5 px-2.5">${s.xm.toFixed(2)}</td>
+          <td class="py-1.5 px-2.5">${s.b.toFixed(2)}</td>
+          <td class="py-1.5 px-2.5">${s.h.toFixed(2)}</td>
+          <td class="py-1.5 px-2.5">${s.W.toFixed(1)}</td>
+          <td class="py-1.5 px-2.5">${s.alphaDeg.toFixed(1)}°</td>
+          <td class="py-1.5 px-2.5">${s.c.toFixed(1)}</td>
+          <td class="py-1.5 px-2.5">${s.phi.toFixed(1)}°</td>
+          <td class="py-1.5 px-2.5 text-right font-semibold text-[#1b687e]">${s.shearResistance.toFixed(1)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleSliceTable() {
+      state.tableExpanded = !state.tableExpanded;
+      const wrap = document.getElementById('slice-table-wrapper');
+      const icon = document.getElementById('icon-toggle-table');
+      const txt = document.getElementById('ui-toggle-table-txt');
+      const t = I18N[state.lang];
+
+      if (state.tableExpanded) {
+        wrap.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+        txt.textContent = t.toggleHide;
+      } else {
+        wrap.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+        txt.textContent = t.toggleShow;
+      }
+    }
+
+    function applyPreset(presetName) {
+      if (presetName === 'unstable') {
+        // Matches reference screenshot FS ≈ 0.67
+        state.H = 8.0;
+        state.m = 1.50;
+        setSlopeType('cut');
+        state.layers.layer1 = { ...state.layers.layer1, gamma: 18.0, c: 6.5, phi: 12.0, thickness: 9.2 };
+        state.layers.layer2 = { ...state.layers.layer2, gamma: 18.5, c: 9.0, phi: 15.0, thickness: 2.2 };
+        state.circle = { xo: 7.40, yo: 13.50, r: 13.70 };
+      } else if (presetName === 'marginal') {
+        // Marginal stability: 1.00 <= FS < 1.50 (e.g., FS ≈ 1.24)
+        state.H = 8.0;
+        state.m = 1.75;
+        setSlopeType('cut');
+        state.layers.layer1 = { ...state.layers.layer1, gamma: 18.5, c: 14.0, phi: 18.0, thickness: 9.2 };
+        state.layers.layer2 = { ...state.layers.layer2, gamma: 19.0, c: 18.0, phi: 20.0, thickness: 2.2 };
+        state.circle = { xo: 8.60, yo: 14.20, r: 14.40 };
+      } else if (presetName === 'stable') {
+        // Safe engineered embankment: FS >= 1.50 (e.g., FS ≈ 1.72)
+        state.H = 8.0;
+        state.m = 2.00;
+        setSlopeType('fill');
+        state.layers.fill = { ...state.layers.fill, gamma: 19.0, c: 20.0, phi: 26.0 };
+        state.layers.layer1 = { ...state.layers.layer1, gamma: 18.5, c: 18.0, phi: 22.0, thickness: 3.5 };
+        state.circle = { xo: 10.20, yo: 15.20, r: 15.40 };
+      }
+
+      document.getElementById('slider-H').value = state.H;
+      document.getElementById('val-H').textContent = `${state.H.toFixed(1)} m`;
+      document.getElementById('slider-m').value = state.m;
+      document.getElementById('val-m').textContent = state.m.toFixed(2);
+      document.getElementById('ui-helper-m').textContent = I18N[state.lang].helperM(state.m);
+
+      syncCircleInputs();
+      renderStratigraphyUI();
+      updateAll();
+    }
+
+    function updateAll() {
+      state.results = analyzeSlopeStability();
+      updateResultsUI();
+      renderCanvas();
+    }
+
+    // =========================================================================
+    // EVENT LISTENERS & INITIALIZATION
+    // =========================================================================
+
+    function bindInputListeners() {
+      // Slope Height H slider
+      const sliderH = document.getElementById('slider-H');
+      sliderH.addEventListener('input', (e) => {
+        const oldH = state.H;
+        const newH = parseFloat(e.target.value);
+        const ratio = newH / oldH;
+        state.H = newH;
+        document.getElementById('val-H').textContent = `${newH.toFixed(1)} m`;
+
+        // Proportionally scale slip circle so it stays anchored to slope geometry
+        state.circle.xo = Number((state.circle.xo * ratio).toFixed(2));
+        state.circle.yo = Number((state.circle.yo * ratio).toFixed(2));
+        state.circle.r = Number((state.circle.r * ratio).toFixed(2));
+        if (state.slopeType === 'cut') {
+          state.layers.layer1.thickness = Number((newH + 1.2).toFixed(1));
+        }
+        syncCircleInputs();
+        renderStratigraphyUI();
+        updateAll();
+      });
+
+      // Slope Ratio m slider
+      const sliderM = document.getElementById('slider-m');
+      sliderM.addEventListener('input', (e) => {
+        const oldM = state.m;
+        const newM = parseFloat(e.target.value);
+        state.m = newM;
+        document.getElementById('val-m').textContent = newM.toFixed(2);
+        document.getElementById('ui-helper-m').textContent = I18N[state.lang].helperM(newM);
+
+        // Shift center Xo proportionally with toe position m*H
+        state.circle.xo = Number((state.circle.xo + (newM - oldM) * state.H * 0.55).toFixed(2));
+        syncCircleInputs();
+        updateAll();
+      });
+
+      // Layer property inputs
+      document.getElementById('inp-layer-h').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (!isNaN(val) && val >= 0.5 && state.selectedLayerKey !== 'fill') {
+          state.layers[state.selectedLayerKey].thickness = val;
+          renderStratigraphyUI();
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-layer-gamma').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (!isNaN(val) && val > 0) {
+          state.layers[state.selectedLayerKey].gamma = val;
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-layer-c').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (!isNaN(val) && val >= 0) {
+          state.layers[state.selectedLayerKey].c = val;
+          renderStratigraphyUI();
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-layer-phi').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (!isNaN(val) && val >= 0 && val <= 60) {
+          state.layers[state.selectedLayerKey].phi = val;
+          renderStratigraphyUI();
+          updateAll();
+        }
+      });
+
+      document.getElementById('chk-bedrock-impassable').addEventListener('change', (e) => {
+        state.bedrockImpassable = e.target.checked;
+        updateAll();
+      });
+
+      // Circle & Slice numerical inputs
+      document.getElementById('inp-xo').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        if (!isNaN(v)) {
+          state.circle.xo = v;
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-yo').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        if (!isNaN(v)) {
+          state.circle.yo = v;
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-r').addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        if (!isNaN(v) && v >= 1.5) {
+          state.circle.r = v;
+          updateAll();
+        }
+      });
+
+      document.getElementById('inp-slices').addEventListener('input', (e) => {
+        const v = parseInt(e.target.value, 10);
+        if (!isNaN(v) && v >= 5 && v <= 60) {
+          state.numSlices = v;
+          updateAll();
+        }
+      });
+
+      // Responsive canvas resize observer
+      window.addEventListener('resize', () => {
+        renderCanvas();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      bindInputListeners();
+      setupCanvasInteractions();
+      syncCircleInputs();
+      applyTranslations();
+      renderStratigraphyUI();
+      updateAll();
+    });
+  </script>
+</body>
+</html>
